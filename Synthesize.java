@@ -7,47 +7,42 @@ import java.util.ArrayList;
 import java.util.Random;
 
 class Dot {
-  public static double impl(double[] a, double[] b, int n) {
-    double sum = 0.0;
+  public static int impl(int[] a, int n) {
+    int sum = 0;
 
     for (int i = 0; i < n; ++i) {
-      sum += a[i] * b[i];
+      sum += a[i];
     }
 
     return sum;
   }
 
-  public static Example randomExample() {
+  public static Example randomExample(int n) {
     Random r = new Random(160995);
 
-    int n = r.nextInt(16);
-    double[] a = new double[n];
-    double[] b = new double[n];
+    int[] a = new int[n];
 
     for (int i = 0; i < n; ++i) {
-      a[i] = r.nextDouble();
-      b[i] = r.nextDouble();
+      a[i] = r.nextInt(10);
     }
 
-    Example ex = new Example().setInputs(() -> new Object[] {a, b, n}).setOutput(impl(a, b, n));
-
-    return ex;
+    return new Example().setInputs(() -> new Object[] {a, n}).setOutput(impl(a, n));
   }
 
   public static SynthesisTask task(int exs) {
     SynthesisTask task = new SynthesisTask()
-                             .setName("dot")
-                             .setInputTypes(double[].class, double[].class, int.class)
-                             .setInputNames("a", "b", "n")
-                             .setOutputType(double.class)
+                             .setName("sum")
+                             .setInputTypes(int[].class, int.class)
+                             .setInputNames("a", "n")
+                             .setOutputType(int.class)
                              .makeInputsImmutable();
 
-    task.addExample(new Example()
-                        .setInputs(() -> new Object[] {new double[] {}, new double[] {}, 0})
-                        .setOutput(0.0));
+    // task.addExample(
+    //     new Example().setInputs(() -> new Object[] {new int[] {}, new int[] {},
+    //     0}).setOutput(0));
 
     for (int i = 0; i < exs; ++i) {
-      task.addExample(randomExample());
+      task.addExample(randomExample(i));
     }
 
     return task;
@@ -71,7 +66,7 @@ public class Synthesize {
     ArrayList<SynthesisTask> tasks = new ArrayList<SynthesisTask>();
 
     tasks.add(add());
-    tasks.add(Dot.task(1));
+    tasks.add(Dot.task(5));
 
     return tasks;
   }
